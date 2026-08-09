@@ -94,7 +94,7 @@ function showLoader(msg) {
     <img src="favicon.svg" alt="AGV" style="width:80px;height:80px;margin-bottom:15px;" onerror="this.style.display='none'">
     <div style="font-size:20px;font-weight:bold;color:var(--gold);margin-bottom:20px;letter-spacing:2px;">AFROJ GLOBAL VENTURES</div>
     <div class="loader" style="margin:20px 0;"></div>
-    <p style="color:#999;">${msg || 'Loading...'}</p>
+    <p style="color:var(--gray);">${msg || 'Loading...'}</p>
   </div>`);
 }
 function apiError(e) {
@@ -213,7 +213,7 @@ function renderCustomerLogin() {
       <div class="card card-gold">
         <div class="login-logo-center"><img src="favicon.svg" alt="AGV" style="width:60px;height:60px;" onerror="this.style.display='none'"></div>
         <h3 class="gold center">Welcome to AFROJ GLOBAL VENTURES</h3>
-        <p class="small center" style="color:#999;margin-bottom:20px;">Login with your mobile number to start shopping</p>
+        <p class="small center" style="color:var(--gray);margin-bottom:20px;">Login with your mobile number to start shopping</p>
         <div class="form-group"><label>Mobile Number</label><input type="tel" id="custMobile" placeholder="Enter 10-digit mobile number" maxlength="10" inputmode="numeric"></div>
         <button class="btn btn-gold btn-block" onclick="sendCustomerOTP()">Send OTP</button>
       </div>
@@ -348,10 +348,10 @@ async function renderProductDetail(pid) {
         <div class="pd-info">
           <div class="pd-name">${esc(product.name)}</div>
           <div class="pd-category">${esc(product.category || '')}</div>
-          ${discount > 0 ? `<div class="pd-price">${fmtPrice(product.price)} <span class="mrp" style="text-decoration:line-through;color:#888;font-size:16px;">${fmtPrice(product.mrp)}</span> <span class="gold" style="font-size:14px;">${discount}% off</span></div>` : `<div class="pd-price">${fmtPrice(product.price)}</div>`}
+          ${discount > 0 ? `<div class="pd-price">${fmtPrice(product.price)} <span class="mrp" style="text-decoration:line-through;color:var(--gray);font-size:16px;">${fmtPrice(product.mrp)}</span> <span class="gold" style="font-size:14px;">${discount}% off</span></div>` : `<div class="pd-price">${fmtPrice(product.price)}</div>`}
           <div class="pd-delivery-eta">\ud83d\ude9a Delivery by <strong class="gold">${etaStr}</strong> (${deliveryDays} days)</div>
           <div class="pd-meta">${product.deliveryCharge > 0 ? `Delivery Charge: ${fmtPrice(product.deliveryCharge)}` : '<span class="gold">FREE Delivery</span>'}</div>
-          <div class="pd-stock">${product.stock > 0 ? `<span style="color:#4CAF50;">\u2713 In Stock (${product.stock} available)</span>` : '<span style="color:#f44336;">Out of Stock</span>'}</div>
+          <div class="pd-stock">${product.stock > 0 ? `<span style="color:var(--green);">\u2713 In Stock (${product.stock} available)</span>` : '<span style="color:var(--red);">Out of Stock</span>'}</div>
           <div class="pd-desc"><h4>Description</h4><p>${esc(product.description || '')}</p></div>
           ${product.stock > 0 ? `
             <button class="btn btn-gold btn-block" onclick="addToCart('${product.id}')">Add to Cart \ud83d\uded2</button>
@@ -460,12 +460,12 @@ function renderCheckout() {
       <div class="summary-box">
         <h4>Order Summary</h4>
         ${CART.map(i=>`<div class="summary-row"><span>${esc(i.name)} \u00d7 ${i.qty}</span><span>${fmtPrice(i.price*i.qty)}</span></div>`).join('')}
-        <hr style="border-color:#333;margin:10px 0;">
+        <hr style="border-color:var(--border);margin:10px 0;">
         <div class="summary-row"><span>Subtotal</span><span>${fmtPrice(subtotal)}</span></div>
         <div class="summary-row"><span>Delivery</span><span>${fmtPrice(delivery)}</span></div>
         <div class="summary-row total"><span>Total</span><span>${fmtPrice(total)}</span></div>
       </div>
-      <div class="payment-box"><p class="small" style="color:#999;">\ud83d\udcb3 Payment: <strong class="gold">Cash on Delivery</strong></p><p class="small" style="color:#666;">Pay when your order arrives</p></div>
+      <div class="payment-box"><p class="small" style="color:var(--gray);">\ud83d\udcb3 Payment: <strong class="gold">Cash on Delivery</strong></p><p class="small" style="color:var(--gray);">Pay when your order arrives</p></div>
       <button class="btn btn-gold btn-block" onclick="placeOrder()">Place Order \ud83c\udf89</button>
     </div>
   `);
@@ -497,7 +497,7 @@ async function placeOrder() {
         <h2 class="gold">Order Placed Successfully!</h2>
         <p>Order ID: <strong>${order.id}</strong></p>
         <div class="delivery-eta-box" style="margin:15px 0;">\ud83d\ude9a Expected Delivery: <strong class="gold">${etaStr}</strong></div>
-        <p style="color:#999;margin:10px 0;">Your order has been placed and is now awaiting admin confirmation.</p>
+        <p style="color:var(--gray);margin:10px 0;">Your order has been placed and is now awaiting admin confirmation.</p>
         <div class="summary-box" style="margin:20px 0;">
           <div class="summary-row total"><span>Total Amount</span><span>${fmtPrice(order.total)}</span></div>
           <div class="summary-row"><span>Payment</span><span>Cash on Delivery</span></div>
@@ -561,14 +561,14 @@ async function renderOrderDetail(oid) {
         <div class="card">
           <div class="order-id gold">Order ${o.id}</div>
           <div class="order-date">${new Date(o.createdAt).toLocaleString('en-IN')}</div>
-          <div style="margin:15px 0;"><span class="badge badge-status ${badgeClass}">${o.status}</span>${o.cancelledBy?`<div class="small" style="color:#f44336;margin-top:5px;">Cancelled by: ${esc(o.cancelledBy)}</div>`:''}</div>
+          <div style="margin:15px 0;"><span class="badge badge-status ${badgeClass}">${o.status}</span>${o.cancelledBy?`<div class="small" style="color:var(--red);margin-top:5px;">Cancelled by: ${esc(o.cancelledBy)}</div>`:''}</div>
           ${!['Delivered','Cancelled','Customer Cancelled'].includes(o.status) ? `<div class="delivery-eta-box">\ud83d\ude9a Expected Delivery: <strong class="gold">${getDeliveryDate(o)}</strong></div>` : ''}
           <h4>\ud83d\udcca Order Tracking</h4>
           <div class="tracking">
             ${(o.statusHistory||[]).map((h,idx)=>{
               const isLast = idx === (o.statusHistory||[]).length-1;
               const isCancelled = ['Cancelled','Customer Cancelled','Rejected by Admin','Rejected by Seller'].includes(h.status);
-              return `<div class="tracking-step"><div class="tracking-dot ${isLast?(isCancelled?'cancelled':'active'):'done'}"></div><div class="tracking-info"><div class="tracking-status ${isCancelled?'text-red':''}">${h.status}</div><div class="tracking-time">${new Date(h.time).toLocaleString('en-IN')}</div>${h.by?`<div class="small" style="color:#666;">by ${esc(h.by)}</div>`:''}</div></div>`;
+              return `<div class="tracking-step"><div class="tracking-dot ${isLast?(isCancelled?'cancelled':'active'):'done'}"></div><div class="tracking-info"><div class="tracking-status ${isCancelled?'text-red':''}">${h.status}</div><div class="tracking-time">${new Date(h.time).toLocaleString('en-IN')}</div>${h.by?`<div class="small" style="color:var(--gray);">by ${esc(h.by)}</div>`:''}</div></div>`;
             }).join('')}
           </div>
         </div>
@@ -584,7 +584,7 @@ async function renderOrderDetail(oid) {
         <div class="card"><h4>\ud83d\udccd Delivery Address</h4><p>${esc(o.customer.name)}<br>${esc(o.customer.address)}<br>${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}<br>Mobile: +91 ${o.customer.mobile}</p></div>
         ${o.assignedDelivery ? `<div class="card"><h4>\ud83d\ude9a Delivery Boy</h4><p>Assigned: ${esc(o.deliveryName || o.assignedDelivery)}</p></div>` : ''}
         <div style="margin-top:15px;">
-          ${isCancellable ? `<button class="btn btn-outline btn-block" style="color:#f44336;border-color:#f44336;" onclick="cancelOrder('${o.id}')">Cancel Order</button>` : ''}
+          ${isCancellable ? `<button class="btn btn-outline btn-block" style="color:var(--red);border-color:var(--red);" onclick="cancelOrder('${o.id}')">Cancel Order</button>` : ''}
           ${o.status==='Delivered' ? '<div class="alert alert-success" style="margin-top:10px;">\u2705 Order Delivered Successfully!</div>' : ''}
           ${['Cancelled','Customer Cancelled'].includes(o.status) ? '<div class="alert alert-error" style="margin-top:10px;">\u274c Order Cancelled</div>' : ''}
         </div>
@@ -619,7 +619,7 @@ async function renderProfile() {
         <div class="card card-gold" style="text-align:center;">
           <div class="profile-avatar">\ud83d\udc64</div>
           <h3 class="gold">${esc(u.name || 'Customer')}</h3>
-          <p style="color:#999;">+91 ${u.mobile}</p>
+          <p style="color:var(--gray);">+91 ${u.mobile}</p>
           ${u.status==='blocked' ? '<div class="alert alert-error">Account Blocked</div>' : '<span class="badge badge-approved">Active</span>'}
         </div>
         <div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr;">
@@ -629,13 +629,13 @@ async function renderProfile() {
         </div>
         <div class="card">
           <h4 class="gold">\ud83d\udccd Saved Address</h4>
-          ${u.address ? `<p>${esc(u.name||'')}<br>${esc(u.address)}<br>${esc(u.city||'')} - ${esc(u.pincode||'')}<br>Mobile: +91 ${u.mobile}</p><button class="btn btn-outline btn-sm" onclick="renderEditProfile()">Edit Address</button>` : '<p style="color:#999;">No address saved yet. Add one during checkout.</p>'}
+          ${u.address ? `<p>${esc(u.name||'')}<br>${esc(u.address)}<br>${esc(u.city||'')} - ${esc(u.pincode||'')}<br>Mobile: +91 ${u.mobile}</p><button class="btn btn-outline btn-sm" onclick="renderEditProfile()">Edit Address</button>` : '<p style="color:var(--gray);">No address saved yet. Add one during checkout.</p>'}
         </div>
         <div class="card">
           <h4 class="gold">\ud83d\udce6 Recent Orders</h4>
-          ${orders.length === 0 ? '<p style="color:#999;">No orders yet</p>' : orders.slice(0,3).map(o=>`<div class="profile-order-row" onclick="renderOrderDetail('${o.id}')" style="padding:10px 0;border-bottom:1px solid #222;cursor:pointer;"><div style="display:flex;justify-content:space-between;"><span class="small">${o.id}</span><span class="badge badge-status ${o.status==='Delivered'?'badge-delivered':['Cancelled','Customer Cancelled'].includes(o.status)?'badge-cancelled':'badge-pending'}" style="font-size:10px;">${o.status}</span></div><div class="small" style="color:#999;">${fmtPrice(o.total)} \u2022 ${new Date(o.createdAt).toLocaleDateString('en-IN')}</div></div>`).join('')}
+          ${orders.length === 0 ? '<p style="color:var(--gray);">No orders yet</p>' : orders.slice(0,3).map(o=>`<div class="profile-order-row" onclick="renderOrderDetail('${o.id}')" style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;"><div style="display:flex;justify-content:space-between;"><span class="small">${o.id}</span><span class="badge badge-status ${o.status==='Delivered'?'badge-delivered':['Cancelled','Customer Cancelled'].includes(o.status)?'badge-cancelled':'badge-pending'}" style="font-size:10px;">${o.status}</span></div><div class="small" style="color:var(--gray);">${fmtPrice(o.total)} \u2022 ${new Date(o.createdAt).toLocaleDateString('en-IN')}</div></div>`).join('')}
         </div>
-        <div class="card"><h4 class="gold">\u2699\ufe0f Settings</h4><button class="btn btn-outline btn-block" onclick="logout()" style="color:#f44336;border-color:#f44336;">Logout</button></div>
+        <div class="card"><h4 class="gold">\u2699\ufe0f Settings</h4><button class="btn btn-outline btn-block" onclick="logout()" style="color:var(--red);border-color:var(--red);">Logout</button></div>
       </div>
       ${bottomNav('profile')}
     `);
@@ -689,7 +689,7 @@ function renderRegister() {
     <div class="app-content">
       <div class="card">
         <h3 class="gold">Register as Seller or Delivery Boy</h3>
-        <p class="small" style="color:#999;">Fill the form below. Admin will review and approve your registration, and set your password.</p>
+        <p class="small" style="color:var(--gray);">Fill the form below. Admin will review and approve your registration, and set your password.</p>
         <div class="form-group"><label>Register As *</label><select id="regRole"><option value="seller">Seller (Add products to sell)</option><option value="delivery">Delivery Boy (Deliver orders)</option></select></div>
         <div class="form-group"><label>Full Name *</label><input type="text" id="regName" placeholder="Your full name"></div>
         <div class="form-group"><label>Mobile Number *</label><input type="tel" id="regMobile" placeholder="10-digit mobile" maxlength="10" inputmode="numeric"></div>
@@ -747,7 +747,7 @@ async function submitRegistration() {
       <div class="success-screen">
         <div class="success-icon">\u2705</div>
         <h2 class="gold">Registration Submitted!</h2>
-        <p style="color:#999;margin:10px 0;">Your registration for ${role==='seller'?'Seller':'Delivery Boy'} has been submitted. Admin will review and approve it, then set your password.</p>
+        <p style="color:var(--gray);margin:10px 0;">Your registration for ${role==='seller'?'Seller':'Delivery Boy'} has been submitted. Admin will review and approve it, then set your password.</p>
         <p class="small">Registration ID: ${r.registration.id}</p>
         <button class="btn btn-gold btn-block" onclick="renderLanding()">Back to Home</button>
       </div>
@@ -767,8 +767,8 @@ function renderSDLogin() {
         <div class="form-group"><label>Mobile Number</label><input type="tel" id="sdMobile" placeholder="10-digit mobile" maxlength="10" inputmode="numeric"></div>
         <div class="form-group"><label>Password</label><input type="password" id="sdPassword" placeholder="Your password (set by admin)"></div>
         <button class="btn btn-gold btn-block" onclick="sdLogin()">Login</button>
-        <p class="small center" style="margin-top:15px;color:#999;">Not registered? <a href="#" onclick="renderRegister();return false;" class="gold">Register here</a></p>
-        <p class="small center" style="color:#666;">Password is set by admin after approval.</p>
+        <p class="small center" style="margin-top:15px;color:var(--gray);">Not registered? <a href="#" onclick="renderRegister();return false;" class="gold">Register here</a></p>
+        <p class="small center" style="color:var(--gray);">Password is set by admin after approval.</p>
       </div>
     </div>
   `);
@@ -803,7 +803,7 @@ async function renderSellerPanel() {
     const myProductIds = myProducts.map(p=>p.id);
     const sellerApprovalOrders = myOrders.filter(o=>o.status==='Seller Approval');
     render(`
-      <div class="app-header"><div class="header-logo gold">Seller Panel</div><button class="back-btn" onclick="logout()" style="position:relative;">Logout</button></div>
+      <div class="app-header"><div class="header-logo">Seller Panel</div><button class="back-btn" onclick="logout()" style="position:relative;">Logout</button></div>
       <div class="app-content" style="padding-bottom:20px;">
         <div class="welcome"><p>Welcome, ${esc(SESSION.user.name||'Seller')}! \ud83c\udfea</p></div>
         <div class="stats-grid">
@@ -823,11 +823,11 @@ async function renderSellerPanel() {
                 <div style="flex:1;">
                   <div class="product-name">${esc(p.name)}</div>
                   <div class="product-price">${fmtPrice(p.price)}</div>
-                  ${p.deliveryDays ? `<div class="small" style="color:#999;">\ud83d\ude9a ${p.deliveryDays} days delivery</div>` : ''}
+                  ${p.deliveryDays ? `<div class="small" style="color:var(--gray);">\ud83d\ude9a ${p.deliveryDays} days delivery</div>` : ''}
                   <span class="badge ${p.status==='approved'?'badge-approved':p.status==='rejected'?'badge-rejected':'badge-pending'}">${p.status}</span>
                   <div style="margin-top:8px;">
                     <button class="btn btn-sm btn-outline" onclick="renderSellerEditProduct('${p.id}')">Edit</button>
-                    <button class="btn btn-sm btn-outline" style="color:#f44336;border-color:#f44336;margin-left:5px;" onclick="sellerDeleteProduct('${p.id}')">Delete</button>
+                    <button class="btn btn-sm btn-outline" style="color:var(--red);border-color:var(--red);margin-left:5px;" onclick="sellerDeleteProduct('${p.id}')">Delete</button>
                   </div>
                 </div>
               </div>
@@ -838,18 +838,22 @@ async function renderSellerPanel() {
         ${sellerApprovalOrders.map(o => `
           <div class="card" style="border:1px solid var(--gold);">
             <div style="display:flex;justify-content:space-between;align-items:start;">
-              <div><div class="product-name">Order ${esc(o.id)}</div><div style="color:#999;font-size:13px;">${esc(o.customer.name)} \u2022 +91 ${esc(o.customer.mobile)}</div><div style="color:var(--gold);font-weight:bold;margin-top:5px;">${fmtPrice(o.total)} (COD)</div></div>
+              <div><div class="product-name">Order ${esc(o.id)}</div><div style="color:var(--gray);font-size:13px;">${esc(o.customer.name)} \u2022 +91 ${esc(o.customer.mobile)}</div><div style="color:var(--gold);font-weight:bold;margin-top:5px;">${fmtPrice(o.total)} (COD)</div></div>
               <span class="badge badge-pending">Awaiting Your Approval</span>
             </div>
-            <div style="margin-top:10px;font-size:13px;color:#aaa;">${o.items.filter(i=>myProductIds.includes(i.id)||myProductIds.includes(i.sellerProductId)).map(i=>`\u2022 ${esc(i.name)} x${i.qty}`).join('<br>')}</div>
-            <div style="margin-top:8px;font-size:12px;color:#666;">${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}</div>
+            <div style="margin-top:10px;font-size:13px;color:var(--text-light);">${o.items.filter(i=>myProductIds.includes(i.id)||myProductIds.includes(i.sellerProductId)).map(i=>`\u2022 ${esc(i.name)} x${i.qty}`).join('<br>')}</div>
+            <div style="margin-top:8px;font-size:12px;color:var(--gray);">${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}</div>
             <button class="btn btn-green btn-block" style="margin-top:10px;" onclick="sellerApproveOrder('${o.id}')">\u2705 Approve Order</button>
-            <button class="btn btn-outline btn-block" style="margin-top:8px;color:#f44336;border-color:#f44336;" onclick="sellerRejectOrder('${o.id}')">\u274c Reject Order</button>
+            <button class="btn btn-outline btn-block" style="margin-top:8px;color:var(--red);border-color:var(--red);" onclick="sellerRejectOrder('${o.id}')">\u274c Reject Order</button>
           </div>
         `).join('')}` : ''}
         <h3 class="section-title" style="margin-top:25px;">\ud83d\udce6 Orders for My Products (${myOrders.length})</h3>
         ${myOrders.length === 0 ? '<div class="empty">No orders yet for your products.</div>' :
-          myOrders.map(o=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:start;"><div><div class="product-name">Order ${esc(o.id)}</div><div style="color:#999;font-size:13px;">${esc(o.customer.name)} \u2022 +91 ${esc(o.customer.mobile)}</div><div style="color:var(--gold);font-weight:bold;margin-top:5px;">${fmtPrice(o.total)}</div></div><span class="badge ${o.status==='Delivered'?'badge-approved':['Cancelled','Customer Cancelled'].includes(o.status)?'badge-rejected':'badge-pending'}">${o.status}</span></div><div style="margin-top:10px;font-size:13px;color:#aaa;">${o.items.filter(i=>myProductIds.includes(i.id)||myProductIds.includes(i.sellerProductId)).map(i=>`\u2022 ${esc(i.name)} x${i.qty}`).join('<br>')}</div></div>`).join('')}
+          myOrders.map(o=>{
+            const myItems = o.items.filter(i=>myProductIds.includes(i.id)||myProductIds.includes(i.sellerProductId)||i.sellerMobile===SESSION.user.mobile);
+            const canPrint = ['Awaiting Delivery','Shipped','Out for Delivery','Delivered'].includes(o.status);
+            return `<div class="card"><div style="display:flex;justify-content:space-between;align-items:start;"><div><div class="product-name">Order ${esc(o.id)}</div><div style="color:var(--gray);font-size:13px;">${esc(o.customer.name)} \u2022 +91 ${esc(o.customer.mobile)}</div><div style="color:var(--gold-dark);font-weight:bold;margin-top:5px;">${fmtPrice(o.total)}</div></div><span class="badge ${o.status==='Delivered'?'badge-approved':['Cancelled','Customer Cancelled'].includes(o.status)?'badge-rejected':'badge-pending'}">${o.status}</span></div><div style="margin-top:10px;font-size:13px;color:var(--text-light);">${myItems.map(i=>`\u2022 ${esc(i.name)} x${i.qty}`).join('<br>')}</div>${canPrint?`<button class="btn btn-sm btn-green" style="margin-top:8px;" onclick="printOrderSlip('${o.id}','seller')">\ud83d\udca4 Print Slip</button>`:''}</div>`;
+          }).join('')}
       </div>
     `);
     SELLER_POLL = setInterval(async () => {
@@ -881,12 +885,12 @@ function renderSellerAddProduct() {
         <div class="form-group"><label>MRP (\u20b9)</label><input type="number" id="spMrp" placeholder="Original price (for discount)" inputmode="numeric"></div>
         <div class="form-group"><label>Delivery Charge (\u20b9)</label><input type="number" id="spDelivery" placeholder="0 for free delivery" value="0" inputmode="numeric"></div>
         <div class="form-group"><label>Stock Quantity *</label><input type="number" id="spStock" placeholder="Available stock" inputmode="numeric"></div>
-        <div class="form-group"><label>Delivery Days *</label><input type="number" id="spDeliveryDays" placeholder="e.g. 5" value="3" min="1" max="30" inputmode="numeric"><p class="small" style="color:#666;">Customer sees expected delivery date based on this</p></div>
+        <div class="form-group"><label>Delivery Days *</label><input type="number" id="spDeliveryDays" placeholder="e.g. 5" value="3" min="1" max="30" inputmode="numeric"><p class="small" style="color:var(--gray);">Customer sees expected delivery date based on this</p></div>
         <div class="form-group"><label>Description</label><textarea id="spDesc" rows="3" placeholder="Product description"></textarea></div>
         <div class="form-group"><label>Product Images (Max 5) *</label>
           <div class="file-upload" onclick="document.getElementById('spImageInput').click()"><div class="upload-icon">\ud83d\udcf7</div><p>Click to upload images (max 5)</p><input type="file" id="spImageInput" accept="image/*" multiple style="display:none;" onchange="handleImages(this,'spImagePreview','spImgCount',sellerImages)"></div>
           <div id="spImagePreview" class="upload-preview"></div>
-          <p class="small" style="color:#666;">Uploaded: <span id="spImgCount">0</span>/5</p>
+          <p class="small" style="color:var(--gray);">Uploaded: <span id="spImgCount">0</span>/5</p>
         </div>
         <button class="btn btn-gold btn-block" onclick="submitSellerProduct()">Submit for Approval</button>
       </div>
@@ -930,7 +934,7 @@ async function submitSellerProduct() {
   try {
     await api('/api/seller-products','POST', { name, category, price, mrp, deliveryCharge:delivery, stock, deliveryDays, description:desc, images:sellerImages });
     sellerImages = [];
-    render(`<div class="success-screen"><div class="success-icon">\u2705</div><h2 class="gold">Product Submitted!</h2><p style="color:#999;">Your product "${esc(name)}" has been submitted for admin approval. Once approved, it will be visible to customers.</p><button class="btn btn-gold btn-block" onclick="renderSellerPanel()">Back to Panel</button></div>`);
+    render(`<div class="success-screen"><div class="success-icon">\u2705</div><h2 class="gold">Product Submitted!</h2><p style="color:var(--gray);">Your product "${esc(name)}" has been submitted for admin approval. Once approved, it will be visible to customers.</p><button class="btn btn-gold btn-block" onclick="renderSellerPanel()">Back to Panel</button></div>`);
   } catch (e) { apiError(e); }
 }
 
@@ -954,7 +958,7 @@ async function renderSellerEditProduct(pid) {
           <div class="form-group"><label>Product Images</label>
             <div class="file-upload" onclick="document.getElementById('spImageInput').click()"><div class="upload-icon">\ud83d\udcf7</div><p>Add more images (max 5 total)</p><input type="file" id="spImageInput" accept="image/*" multiple style="display:none;" onchange="handleImages(this,'spImagePreview','spImgCount',sellerImages)"></div>
             <div id="spImagePreview" class="upload-preview"></div>
-            <p class="small" style="color:#666;">Current: <span id="spImgCount">${sellerImages.length}</span>/5</p>
+            <p class="small" style="color:var(--gray);">Current: <span id="spImgCount">${sellerImages.length}</span>/5</p>
           </div>
           <div class="form-group"><label>Description</label><textarea id="spDesc" rows="3">${esc(p.description||'')}</textarea></div>
           <button class="btn btn-gold btn-block" onclick="sellerSaveEdit('${pid}')">Save Changes</button>
@@ -1006,7 +1010,7 @@ async function renderDeliveryPanel() {
     const availableOrders = r.available || [];
     const delivered = (r.myOrders||[]).filter(o=>o.status==='Delivered').length;
     render(`
-      <div class="app-header"><div class="header-logo gold">Delivery Panel</div><button class="back-btn" onclick="logout()" style="position:relative;">Logout</button></div>
+      <div class="app-header"><div class="header-logo">Delivery Panel</div><button class="back-btn" onclick="logout()" style="position:relative;">Logout</button></div>
       <div class="app-content" style="padding-bottom:20px;">
         <div class="welcome"><p>Welcome, ${esc(SESSION.user.name||'Delivery Boy')}! \ud83d\ude9a</p></div>
         <div class="stats-grid">
@@ -1016,10 +1020,14 @@ async function renderDeliveryPanel() {
         </div>
         <h3 class="section-title">\ud83d\udce6 Available for Pickup</h3>
         ${availableOrders.length === 0 ? '<div class="empty">No orders available for pickup</div>' :
-          availableOrders.map(o=>`<div class="card"><div class="order-id">${o.id}</div><div class="small" style="color:#999;">${new Date(o.createdAt).toLocaleString('en-IN')}</div><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)}<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}<br><strong>Mobile:</strong> <a href="tel:+91${o.customer.mobile}" class="gold">+91 ${o.customer.mobile}</a><br><strong>Items:</strong> ${o.items.length} | <strong>Total:</strong> ${fmtPrice(o.total)} (COD)</div><button class="btn btn-gold btn-block" onclick="acceptDeliveryOrder('${o.id}')">Accept Order</button></div>`).join('')}
+          availableOrders.map(o=>`<div class="card"><div class="order-id">${o.id}</div><div class="small" style="color:var(--gray);">${new Date(o.createdAt).toLocaleString('en-IN')}</div><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)}<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}<br><strong>Mobile:</strong> <a href="tel:+91${o.customer.mobile}" class="gold">+91 ${o.customer.mobile}</a><br><strong>Items:</strong> ${o.items.length} | <strong>Total:</strong> ${fmtPrice(o.total)} (COD)</div><button class="btn btn-gold btn-block" onclick="acceptDeliveryOrder('${o.id}')">Accept Order</button></div>`).join('')}
         <h3 class="section-title">\ud83d\ude9a My Active Deliveries</h3>
         ${myOrders.length === 0 ? '<div class="empty">No active deliveries</div>' :
-          myOrders.map(o=>`<div class="card"><div class="order-id">${o.id}</div><span class="badge badge-status ${o.status==='Out for Delivery'?'badge-outfordelivery':o.status==='Shipped'?'badge-confirmed':'badge-awaitingdelivery'}">${o.status}</span><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)}<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}<br><strong>Mobile:</strong> <a href="tel:+91${o.customer.mobile}" class="gold">+91 ${o.customer.mobile}</a><br><strong>Items:</strong> ${o.items.length} | <strong>Total:</strong> ${fmtPrice(o.total)} (COD)</div>${o.status==='Shipped'?`<button class="btn btn-orange btn-block" onclick="updateDeliveryStatus('${o.id}','Out for Delivery')">Mark Out for Delivery</button>`:''}${o.status==='Out for Delivery'?`<button class="btn btn-green btn-block" onclick="updateDeliveryStatus('${o.id}','Delivered')">Mark as Delivered</button>`:''}</div>`).join('')}
+          myOrders.map(o=>{
+            const showOutBtn = o.status==='Shipped';
+            const showConfirmCancel = o.status==='Out for Delivery';
+            return `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="order-id">${o.id}</div><span class="badge status-badge ${o.status==='Out for Delivery'?'status-delivery':o.status==='Shipped'?'status-shipped':'status-awaiting'}">${o.status}</span></div><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)}<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}<br><strong>Mobile:</strong> <a href="tel:+91${o.customer.mobile}" class="gold">+91 ${o.customer.mobile}</a><br><strong>Items:</strong> ${o.items.length} | <strong>Total:</strong> ${fmtPrice(o.total)} (COD)</div>${showOutBtn?`<button class="btn btn-orange btn-block" onclick="updateDeliveryStatus('${o.id}','Out for Delivery')">\ud83d\ude9a Out of Delivery</button>`:''}${showConfirmCancel?`<div class="delivery-confirm-btns"><button class="btn-confirm-delivery" onclick="confirmDelivery('${o.id}')">\u2705 Confirm Delivery</button><button class="btn-cancel-delivery" onclick="cancelDelivery('${o.id}')">\u274c Cancel</button></div>`:''}</div>`;
+          }).join('')}
       </div>
     `);
     DELIVERY_POLL = setInterval(async () => {
@@ -1040,6 +1048,16 @@ async function acceptDeliveryOrder(oid) {
 async function updateDeliveryStatus(oid, status) {
   showLoader('Updating status...');
   try { await api('/api/delivery/orders/'+oid,'PUT', { status }); renderDeliveryPanel(); } catch(e) { apiError(e); }
+}
+async function confirmDelivery(oid) {
+  if (!confirm('Confirm this order as Delivered?')) return;
+  showLoader('Confirming delivery...');
+  try { await api('/api/delivery/orders/'+oid,'PUT', { status:'Delivered' }); renderDeliveryPanel(); } catch(e) { apiError(e); }
+}
+async function cancelDelivery(oid) {
+  if (!confirm('Cancel this delivery? Order will be cancelled.')) return;
+  showLoader('Cancelling...');
+  try { await api('/api/delivery/orders/'+oid,'PUT', { status:'Cancelled', cancelledBy:'Delivery' }); renderDeliveryPanel(); } catch(e) { apiError(e); }
 }
 
 // ====== ADMIN LOGIN ======
@@ -1152,9 +1170,17 @@ function loadAdminTab(tab, isPoll) {
       </div>
       <h3 class="section-title">\ud83d\udd34 Live Orders (Awaiting Action)</h3>
       ${awaitingAdmin === 0 ? '<div class="empty">No orders awaiting action</div>' :
-        orders.filter(o=>o.status==='Awaiting Admin').reverse().map(o=>`<div class="card" style="border:1px solid var(--gold);"><div class="order-id gold">${o.id}</div><span class="badge badge-awaitingadmin">${o.status}</span><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)} (+91 ${o.customer.mobile})<br><strong>Items:</strong> ${o.items.length} | <strong>Total:</strong> ${fmtPrice(o.total)} (COD)<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}</div><button class="btn btn-green btn-block" onclick="adminAcceptOrder('${o.id}')">\u2705 Accept & Send to Seller</button><button class="btn btn-outline btn-block" style="margin-top:8px;color:#f44336;border-color:#f44336;" onclick="adminRejectOrder('${o.id}')">\u274c Reject Order</button></div>`).join('')}
-      ${sellerApproval > 0 ? `<h3 class="section-title" style="margin-top:25px;">\ud83d\udce6 Awaiting Seller Approval (${sellerApproval})</h3>${orders.filter(o=>o.status==='Seller Approval').reverse().map(o=>`<div class="card"><div class="order-id gold">${o.id}</div><span class="badge badge-pending">${o.status}</span><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)} (+91 ${o.customer.mobile})<br><strong>Items:</strong> ${o.items.map(i=>esc(i.name)+' x'+i.qty).join(', ')}<br><strong>Total:</strong> ${fmtPrice(o.total)} (COD)</div><div class="small" style="color:#999;">Waiting for seller to approve this order...</div></div>`).join('')}` : ''}
-      ${awaitingDelivery > 0 ? `<h3 class="section-title" style="margin-top:25px;">\ud83d\ude9a Ready for Delivery (${awaitingDelivery})</h3>${orders.filter(o=>o.status==='Awaiting Delivery').reverse().map(o=>`<div class="card" style="border:1px solid #4CAF50;"><div class="order-id gold">${o.id}</div><span class="badge badge-awaitingdelivery">${o.status}</span><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)} (+91 ${o.customer.mobile})<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}<br><strong>Items:</strong> ${o.items.length} | <strong>Total:</strong> ${fmtPrice(o.total)} (COD)${o.assignedDelivery?`<br><strong>Delivery Boy:</strong> ${esc(o.deliveryName||o.assignedDelivery)}`:''}</div>${!o.assignedDelivery?`<button class="btn btn-gold btn-block" onclick="adminAssignDelivery('${o.id}')">Assign Delivery Boy</button>`:'<div class="alert alert-success" style="margin-top:8px;">Delivery boy assigned - waiting for acceptance</div>'}</div>`).join('')}` : ''}
+        orders.filter(o=>o.status==='Awaiting Admin').reverse().map(o=>{
+          const hasS = o.hasSellerItems || (o.items||[]).some(i=>i.source==='seller'||i.sellerProductId);
+          const srcLabel = hasS ? '<span class="badge badge-blue">Seller Order</span>' : '<span class="badge badge-gold">Admin Order</span>';
+          const accLabel = hasS ? '\u2705 Accept & Send to Seller' : '\u2705 Accept Order';
+          return `<div class="card" style="border:1px solid var(--gold);"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="order-id gold">${o.id}</div>${srcLabel}</div><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)} (+91 ${o.customer.mobile})<br><strong>Items:</strong> ${o.items.length} | <strong>Total:</strong> ${fmtPrice(o.total)} (COD)<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}</div><button class="btn btn-green btn-block" onclick="adminAcceptOrder('${o.id}')">${accLabel}</button><button class="btn btn-outline btn-block" style="margin-top:8px;color:var(--red);border-color:var(--red);" onclick="adminRejectOrder('${o.id}')">\u274c Reject Order</button></div>`;
+        }).join('')}
+      ${sellerApproval > 0 ? `<h3 class="section-title" style="margin-top:25px;">\ud83d\udce6 Awaiting Seller Approval (${sellerApproval})</h3>${orders.filter(o=>o.status==='Seller Approval').reverse().map(o=>`<div class="card"><div class="order-id gold">${o.id}</div><span class="badge badge-pending">${o.status}</span><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)} (+91 ${o.customer.mobile})<br><strong>Items:</strong> ${o.items.map(i=>esc(i.name)+' x'+i.qty).join(', ')}<br><strong>Total:</strong> ${fmtPrice(o.total)} (COD)</div><div class="small" style="color:var(--gray);">Waiting for seller to approve this order...</div></div>`).join('')}` : ''}
+      ${awaitingDelivery > 0 ? `<h3 class="section-title" style="margin-top:25px;">\ud83d\ude9a Ready for Delivery (${awaitingDelivery})</h3>${orders.filter(o=>o.status==='Awaiting Delivery').reverse().map(o=>{
+        const isAdminOrder = !o.hasSellerItems || (!(o.items||[]).some(i=>i.source==='seller'||i.sellerProductId));
+        return `<div class="card" style="border:1px solid var(--green);"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="order-id gold">${o.id}</div>${isAdminOrder?'<span class="badge badge-gold">Admin</span>':'<span class="badge badge-blue">Seller</span>'}</div><span class="badge status-badge status-delivery">${o.status}</span><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)} (+91 ${o.customer.mobile})<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}<br><strong>Items:</strong> ${o.items.length} | <strong>Total:</strong> ${fmtPrice(o.total)} (COD)${o.assignedDelivery?`<br><strong>Delivery Boy:</strong> ${esc(o.deliveryName||o.assignedDelivery)}`:''}</div><div style="display:flex;gap:8px;flex-wrap:wrap;">${isAdminOrder?`<button class="btn btn-green" style="flex:1;" onclick="printOrderSlip('${o.id}','admin')">\ud83d\udca4 Print Slip</button>`:''}${!o.assignedDelivery?`<button class="btn btn-gold" style="flex:1;" onclick="adminAssignDelivery('${o.id}')">Assign Delivery Boy</button>`:'<div class="alert alert-success" style="flex:1;margin-top:0;">Delivery boy assigned</div>'}</div></div>`;
+      }).join('')}` : ''}
       <h3 class="section-title">\ud83d\ude9a Shipped / Out for Delivery</h3>
       ${(outForDelivery + orders.filter(o=>o.status==='Shipped').length) === 0 ? '<div class="empty">No orders in transit</div>' :
         orders.filter(o=>['Out for Delivery','Shipped'].includes(o.status)).map(o=>`<div class="card"><div class="order-id">${o.id}</div><span class="badge badge-outfordelivery">${o.status}</span><div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)}<br><strong>Delivery Boy:</strong> ${esc(o.deliveryName||o.assignedDelivery||'Not assigned')}</div></div>`).join('')}
@@ -1163,29 +1189,29 @@ function loadAdminTab(tab, isPoll) {
   else if (tab === 'registrations') {
     content = `<h3 class="section-title">\ud83d\udcdd Registrations (${regs.length})</h3>
       ${regs.length === 0 ? '<div class="empty">No registrations yet</div>' :
-        regs.reverse().map(r=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div><strong class="gold">${esc(r.name)}</strong><span class="badge ${r.status==='approved'?'badge-approved':r.status==='rejected'?'badge-rejected':r.status==='blocked'?'badge-cancelled':'badge-pending'}">${r.status}</span></div><div class="small" style="color:#999;">${r.role}</div></div><div style="margin:10px 0;"><strong>Mobile:</strong> +91 ${r.mobile}<br><strong>City:</strong> ${esc(r.city)}<br>${r.shop?`<strong>Shop:</strong> ${esc(r.shop)}<br>`:''}<strong>Aadhar:</strong> ${r.aadhar||'-'}<br><strong>Registered:</strong> ${new Date(r.createdAt).toLocaleString('en-IN')}${r.password?`<br><strong>Password:</strong> ${esc(r.password)} (set)`:'<br><strong>Password:</strong> Not set yet'}</div><div class="doc-preview-row"><div class="doc-preview" onclick="viewImageSrc('${esc(r.aadharPhoto)}')">${r.aadharPhoto?`<img src="${r.aadharPhoto}" style="width:100%;height:100%;object-fit:cover;">`:'<div class="doc-label">No</div>'}<div class="doc-label">Aadhar</div></div><div class="doc-preview" onclick="viewImageSrc('${esc(r.photo)}')">${r.photo?`<img src="${r.photo}" style="width:100%;height:100%;object-fit:cover;">`:'<div class="doc-label">No</div>'}<div class="doc-label">Photo</div></div></div>${r.status==='pending'?`<button class="btn btn-green btn-block" onclick="adminApproveReg('${r.id}')">\u2705 Approve & Set Password</button><button class="btn btn-outline btn-block" style="margin-top:8px;color:#f44336;border-color:#f44336;" onclick="adminRejectReg('${r.id}')">\u274c Reject</button>`:r.status==='approved'?`<button class="btn btn-outline btn-block" onclick="adminResetPassword('${r.id}')" style="margin-bottom:8px;">\ud83d\udd11 Reset Password</button><button class="btn btn-outline btn-block" style="color:#f44336;border-color:#f44336;" onclick="adminBlockReg('${r.id}')">\ud83d\udeab Block</button>`:r.status==='blocked'?`<button class="btn btn-green btn-block" onclick="adminUnblockReg('${r.id}')">\u2705 Unblock</button>`:''}</div>`).join('')}`;
+        regs.reverse().map(r=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div><strong class="gold">${esc(r.name)}</strong><span class="badge ${r.status==='approved'?'badge-approved':r.status==='rejected'?'badge-rejected':r.status==='blocked'?'badge-cancelled':'badge-pending'}">${r.status}</span></div><div class="small" style="color:var(--gray);">${r.role}</div></div><div style="margin:10px 0;"><strong>Mobile:</strong> +91 ${r.mobile}<br><strong>City:</strong> ${esc(r.city)}<br>${r.shop?`<strong>Shop:</strong> ${esc(r.shop)}<br>`:''}<strong>Aadhar:</strong> ${r.aadhar||'-'}<br><strong>Registered:</strong> ${new Date(r.createdAt).toLocaleString('en-IN')}${r.password?`<br><strong>Password:</strong> ${esc(r.password)} (set)`:'<br><strong>Password:</strong> Not set yet'}</div><div class="doc-preview-row"><div class="doc-preview" onclick="viewImageSrc('${esc(r.aadharPhoto)}')">${r.aadharPhoto?`<img src="${r.aadharPhoto}" style="width:100%;height:100%;object-fit:cover;">`:'<div class="doc-label">No</div>'}<div class="doc-label">Aadhar</div></div><div class="doc-preview" onclick="viewImageSrc('${esc(r.photo)}')">${r.photo?`<img src="${r.photo}" style="width:100%;height:100%;object-fit:cover;">`:'<div class="doc-label">No</div>'}<div class="doc-label">Photo</div></div></div>${r.status==='pending'?`<button class="btn btn-green btn-block" onclick="adminApproveReg('${r.id}')">\u2705 Approve & Set Password</button><button class="btn btn-outline btn-block" style="margin-top:8px;color:var(--red);border-color:var(--red);" onclick="adminRejectReg('${r.id}')">\u274c Reject</button>`:r.status==='approved'?`<button class="btn btn-outline btn-block" onclick="adminResetPassword('${r.id}')" style="margin-bottom:8px;">\ud83d\udd11 Reset Password</button><button class="btn btn-outline btn-block" style="color:var(--red);border-color:var(--red);" onclick="adminBlockReg('${r.id}')">\ud83d\udeab Block</button>`:r.status==='blocked'?`<button class="btn btn-green btn-block" onclick="adminUnblockReg('${r.id}')">\u2705 Unblock</button>`:''}</div>`).join('')}`;
   }
   else if (tab === 'products') {
     content = `<h3 class="section-title">\ud83d\udce6 Admin Products (${products.length})</h3>
       <button class="btn btn-gold btn-block" onclick="renderAdminAddProduct()">\u2795 Add Product</button>
-      ${products.map(p=>{ const img=(p.images&&p.images[0])?p.images[0]:(p.image||''); return `<div class="card"><div style="display:flex;gap:10px;"><div class="product-img" style="width:80px;height:80px;flex-shrink:0;background-image:url('${esc(img)}')"></div><div style="flex:1;"><div class="product-name">${esc(p.name)}</div><div class="product-price">${fmtPrice(p.price)}</div><div class="small" style="color:#999;">Stock: ${p.stock} | ${esc(p.category)}${p.deliveryDays?' | \ud83d\ude9a '+p.deliveryDays+'d':''}</div><div style="margin-top:8px;"><button class="btn btn-sm btn-outline" onclick="renderAdminEditProduct('${p.id}')">Edit</button><button class="btn btn-sm btn-outline" style="color:#f44336;border-color:#f44336;margin-left:5px;" onclick="adminDeleteProduct('${p.id}')">Delete</button></div></div></div></div>`; }).join('')}`;
+      ${products.map(p=>{ const img=(p.images&&p.images[0])?p.images[0]:(p.image||''); return `<div class="card"><div style="display:flex;gap:10px;"><div class="product-img" style="width:80px;height:80px;flex-shrink:0;background-image:url('${esc(img)}')"></div><div style="flex:1;"><div class="product-name">${esc(p.name)}</div><div class="product-price">${fmtPrice(p.price)}</div><div class="small" style="color:var(--gray);">Stock: ${p.stock} | ${esc(p.category)}${p.deliveryDays?' | \ud83d\ude9a '+p.deliveryDays+'d':''}</div><div style="margin-top:8px;"><button class="btn btn-sm btn-outline" onclick="renderAdminEditProduct('${p.id}')">Edit</button><button class="btn btn-sm btn-outline" style="color:var(--red);border-color:var(--red);margin-left:5px;" onclick="adminDeleteProduct('${p.id}')">Delete</button></div></div></div></div>`; }).join('')}`;
   }
   else if (tab === 'seller') {
     content = `<h3 class="section-title">\ud83c\udfea Seller Products (${sellerProducts.length})</h3>
       ${sellerProducts.length === 0 ? '<div class="empty">No seller products submitted yet</div>' :
-        sellerProducts.reverse().map(p=>{ const img=(p.images&&p.images[0])?p.images[0]:(p.image||''); return `<div class="card"><div style="display:flex;gap:10px;"><div class="product-img" style="width:80px;height:80px;flex-shrink:0;background-image:url('${esc(img)}')"></div><div style="flex:1;"><div class="product-name">${esc(p.name)}</div><div class="product-price">${fmtPrice(p.price)}</div><div class="small" style="color:#999;">By: ${esc(p.sellerName)} (+91 ${p.sellerMobile})</div><div class="small" style="color:#999;">Stock: ${p.stock}${p.deliveryDays?' | \ud83d\ude9a '+p.deliveryDays+'d':''}</div><span class="badge ${p.status==='approved'?'badge-approved':p.status==='rejected'?'badge-rejected':'badge-pending'}">${p.status}</span></div></div>${p.images&&p.images.length>1?`<div class="gallery-thumbs" style="margin:10px 0;">${p.images.map(img=>`<div class="gallery-thumb" style="width:40px;height:40px;background-image:url('${esc(img)}')"></div>`).join('')}</div>`:''}<p class="small" style="color:#999;margin:8px 0;">${esc(p.description||'')}</p>${p.status==='pending'?`<button class="btn btn-green btn-block" onclick="adminApproveSellerProduct('${p.id}')">\u2705 Approve (Make Live)</button><button class="btn btn-outline btn-block" style="margin-top:8px;color:#f44336;border-color:#f44336;" onclick="adminRejectSellerProduct('${p.id}')">\u274c Reject</button>`:p.status==='approved'?'<div class="alert alert-success" style="margin-top:8px;">\u2705 Approved & visible to customers</div>':'<div class="alert alert-error" style="margin-top:8px;">\u274c Rejected</div>'}</div>`; }).join('')}`;
+        sellerProducts.reverse().map(p=>{ const img=(p.images&&p.images[0])?p.images[0]:(p.image||''); return `<div class="card"><div style="display:flex;gap:10px;"><div class="product-img" style="width:80px;height:80px;flex-shrink:0;background-image:url('${esc(img)}')"></div><div style="flex:1;"><div class="product-name">${esc(p.name)}</div><div class="product-price">${fmtPrice(p.price)}</div><div class="small" style="color:var(--gray);">By: ${esc(p.sellerName)} (+91 ${p.sellerMobile})</div><div class="small" style="color:var(--gray);">Stock: ${p.stock}${p.deliveryDays?' | \ud83d\ude9a '+p.deliveryDays+'d':''}</div><span class="badge ${p.status==='approved'?'badge-approved':p.status==='rejected'?'badge-rejected':'badge-pending'}">${p.status}</span></div></div>${p.images&&p.images.length>1?`<div class="gallery-thumbs" style="margin:10px 0;">${p.images.map(img=>`<div class="gallery-thumb" style="width:40px;height:40px;background-image:url('${esc(img)}')"></div>`).join('')}</div>`:''}<p class="small" style="color:var(--gray);margin:8px 0;">${esc(p.description||'')}</p><button class="btn btn-outline btn-block" style="margin-top:8px;" onclick="adminEditSellerProduct('${p.id}')">\u270f\ufe0f Edit Product</button>${p.status==='pending'?`<button class="btn btn-green btn-block" style="margin-top:8px;" onclick="adminApproveSellerProduct('${p.id}')">\u2705 Approve (Make Live)</button><button class="btn btn-outline btn-block" style="margin-top:8px;color:var(--red);border-color:var(--red);" onclick="adminRejectSellerProduct('${p.id}')">\u274c Reject</button>`:p.status==='approved'?'<div class="alert alert-success" style="margin-top:8px;">\u2705 Approved & visible to customers</div>':'<div class="alert alert-error" style="margin-top:8px;">\u274c Rejected</div>'}</div>`; }).join('')}`;
   }
   else if (tab === 'orders') {
     const statusCounts = {}; orders.forEach(o=>{ statusCounts[o.status] = (statusCounts[o.status]||0)+1; });
     content = `<h3 class="section-title">\ud83d\uded2 All Orders (${orders.length})</h3>
       <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(100px,1fr));">${Object.entries(statusCounts).map(([s,c])=>`<div class="stat-card"><div class="stat-num gold">${c}</div><div class="stat-label">${s}</div></div>`).join('')}</div>
       ${orders.length === 0 ? '<div class="empty">No orders yet</div>' :
-        orders.reverse().map(o=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="order-id gold">${o.id}</div><span class="badge badge-status ${o.status==='Delivered'?'badge-delivered':['Cancelled','Customer Cancelled'].includes(o.status)?'badge-cancelled':o.status==='Out for Delivery'?'badge-outfordelivery':o.status==='Shipped'?'badge-confirmed':o.status==='Awaiting Delivery'?'badge-awaitingdelivery':'badge-awaitingadmin'}">${o.status}</span></div><div class="small" style="color:#999;">${new Date(o.createdAt).toLocaleString('en-IN')}</div>${o.cancelledBy?`<div class="small" style="color:#f44336;">Cancelled by: ${esc(o.cancelledBy)}</div>`:''}<div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)} (+91 ${o.customer.mobile})<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}<br><strong>Items:</strong> ${o.items.map(i=>esc(i.name)+' \u00d7'+i.qty).join(', ')}<br><strong>Total:</strong> ${fmtPrice(o.total)} (COD)${o.expectedDelivery?`<br><strong>Expected Delivery:</strong> ${getDeliveryDate(o)}`:''}${o.assignedDelivery?`<br><strong>Delivery Boy:</strong> ${esc(o.deliveryName||o.assignedDelivery)}`:''}</div><div class="tracking" style="margin:10px 0;">${(o.statusHistory||[]).map(h=>`<div class="small" style="color:#666;">\u2192 ${h.status} (${new Date(h.time).toLocaleString('en-IN')})</div>`).join('')}</div><div style="display:flex;gap:5px;flex-wrap:wrap;">${o.status==='Awaiting Admin'?`<button class="btn btn-sm btn-green" onclick="adminAcceptOrder('${o.id}')">\u2705 Accept & Send to Seller</button><button class="btn btn-sm btn-outline" style="color:#f44336;border-color:#f44336;" onclick="adminRejectOrder('${o.id}')">\u274c Reject</button>`:''}${o.status==='Awaiting Delivery'&&!o.assignedDelivery?`<button class="btn btn-sm btn-gold" onclick="adminAssignDelivery('${o.id}')">Assign Delivery Boy</button>`:''}${['Shipped','Out for Delivery'].includes(o.status)?`<button class="btn btn-sm btn-green" onclick="adminOrderStatus('${o.id}','Delivered')">\u2705 Mark Delivered</button>`:''}</div></div>`).join('')}`;
+        orders.reverse().map(o=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="order-id gold">${o.id}</div><span class="badge badge-status ${o.status==='Delivered'?'badge-delivered':['Cancelled','Customer Cancelled'].includes(o.status)?'badge-cancelled':o.status==='Out for Delivery'?'badge-outfordelivery':o.status==='Shipped'?'badge-confirmed':o.status==='Awaiting Delivery'?'badge-awaitingdelivery':'badge-awaitingadmin'}">${o.status}</span></div><div class="small" style="color:var(--gray);">${new Date(o.createdAt).toLocaleString('en-IN')}</div>${o.cancelledBy?`<div class="small" style="color:var(--red);">Cancelled by: ${esc(o.cancelledBy)}</div>`:''}<div style="margin:10px 0;"><strong>Customer:</strong> ${esc(o.customer.name)} (+91 ${o.customer.mobile})<br><strong>Address:</strong> ${esc(o.customer.address)}, ${esc(o.customer.city||'')} ${o.customer.pincode?'- '+esc(o.customer.pincode):''}<br><strong>Items:</strong> ${o.items.map(i=>esc(i.name)+' \u00d7'+i.qty).join(', ')}<br><strong>Total:</strong> ${fmtPrice(o.total)} (COD)${o.expectedDelivery?`<br><strong>Expected Delivery:</strong> ${getDeliveryDate(o)}`:''}${o.assignedDelivery?`<br><strong>Delivery Boy:</strong> ${esc(o.deliveryName||o.assignedDelivery)}`:''}</div><div class="tracking" style="margin:10px 0;">${(o.statusHistory||[]).map(h=>`<div class="small" style="color:var(--gray);">\u2192 ${h.status} (${new Date(h.time).toLocaleString('en-IN')})</div>`).join('')}</div><div style="display:flex;gap:5px;flex-wrap:wrap;">${o.status==='Awaiting Admin'?(()=>{const hs=o.hasSellerItems||(o.items||[]).some(i=>i.source==='seller'||i.sellerProductId);return `<button class="btn btn-sm btn-green" onclick="adminAcceptOrder('${o.id}')">${hs?'\u2705 Send to Seller':'\u2705 Accept'}</button><button class="btn btn-sm btn-outline" style="color:var(--red);border-color:var(--red);" onclick="adminRejectOrder('${o.id}')">\u274c Reject</button>`;})():''}${o.status==='Awaiting Delivery'&&!o.hasSellerItems?`<button class="btn btn-sm btn-green" onclick="printOrderSlip('${o.id}','admin')">\ud83d\udca4 Print</button>`:''}${o.status==='Awaiting Delivery'&&!o.assignedDelivery?`<button class="btn btn-sm btn-gold" onclick="adminAssignDelivery('${o.id}')">Assign Delivery</button>`:''}${['Shipped','Out for Delivery'].includes(o.status)?`<button class="btn btn-sm btn-green" onclick="adminOrderStatus('${o.id}','Delivered')">\u2705 Delivered</button>`:''}</div></div>`).join('')}`;
   }
   else if (tab === 'users') {
     content = `<h3 class="section-title">\ud83d\udc65 Customers (${users.length})</h3>
       ${users.length === 0 ? '<div class="empty">No customers registered yet</div>' :
-        users.reverse().map(u=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div><strong class="gold">${esc(u.name||'Unnamed')}</strong><span class="badge ${u.status==='blocked'?'badge-cancelled':'badge-approved'}">${u.status||'active'}</span></div></div><div style="margin:10px 0;"><strong>Mobile:</strong> +91 ${u.mobile}<br>${u.address?`<strong>Address:</strong> ${esc(u.address)}, ${esc(u.city||'')} - ${esc(u.pincode||'')}<br>`:''}<strong>Joined:</strong> ${new Date(u.createdAt).toLocaleString('en-IN')}</div><div style="margin-bottom:8px;"><strong>Orders:</strong> ${orders.filter(o=>o.customerMobile===u.mobile).length}</div>${u.status==='blocked'?`<button class="btn btn-sm btn-green" onclick="adminUnblockUser('${u.id}')">\u2705 Unblock</button>`:`<button class="btn btn-sm btn-outline" style="color:#f44336;border-color:#f44336;" onclick="adminBlockUser('${u.id}')">\ud83d\udeab Block</button>`}</div>`).join('')}`;
+        users.reverse().map(u=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div><strong class="gold">${esc(u.name||'Unnamed')}</strong><span class="badge ${u.status==='blocked'?'badge-cancelled':'badge-approved'}">${u.status||'active'}</span></div></div><div style="margin:10px 0;"><strong>Mobile:</strong> +91 ${u.mobile}<br>${u.address?`<strong>Address:</strong> ${esc(u.address)}, ${esc(u.city||'')} - ${esc(u.pincode||'')}<br>`:''}<strong>Joined:</strong> ${new Date(u.createdAt).toLocaleString('en-IN')}</div><div style="margin-bottom:8px;"><strong>Orders:</strong> ${orders.filter(o=>o.customerMobile===u.mobile).length}</div>${u.status==='blocked'?`<button class="btn btn-sm btn-green" onclick="adminUnblockUser('${u.id}')">\u2705 Unblock</button>`:`<button class="btn btn-sm btn-outline" style="color:var(--red);border-color:var(--red);" onclick="adminBlockUser('${u.id}')">\ud83d\udeab Block</button>`}</div>`).join('')}`;
   }
   else if (tab === 'settings') {
     content = `<h3 class="section-title">\u2699\ufe0f Store Settings</h3>
@@ -1196,7 +1222,7 @@ function loadAdminTab(tab, isPoll) {
         <div class="form-group"><label>Admin Password</label><input type="text" id="setAdminPassword" value="${esc(settings.adminPassword||'')}"></div>
         <button class="btn btn-gold btn-block" onclick="adminSaveSettings()">Save Settings</button>
       </div>
-      <div class="card" style="margin-top:15px;"><h4 class="gold">\ud83d\udcca System Info</h4><p class="small">Products: ${products.length}<br>Seller Products: ${sellerProducts.length}<br>Orders: ${orders.length}<br>Customers: ${users.length}<br>Registrations: ${regs.length}</p><p class="small" style="color:#666;">Backend: Live REST API - real-time across India</p></div>`;
+      <div class="card" style="margin-top:15px;"><h4 class="gold">\ud83d\udcca System Info</h4><p class="small">Products: ${products.length}<br>Seller Products: ${sellerProducts.length}<br>Orders: ${orders.length}<br>Customers: ${users.length}<br>Registrations: ${regs.length}</p><p class="small" style="color:var(--gray);">Backend: Live REST API - real-time across India</p></div>`;
   }
 
   if (!isPoll) {
@@ -1213,8 +1239,13 @@ async function adminReloadAndRender() {
 }
 
 async function adminAcceptOrder(oid) {
-  showLoader('Accepting & sending to seller...');
-  try { await api('/api/admin/orders/'+oid+'/status','PUT', { status:'Seller Approval' }); await adminReloadAndRender(); } catch(e) { apiError(e); }
+  // Check if order has seller items — if yes, send to seller for approval; if admin-only, go to Awaiting Delivery
+  const D = ADMIN_DATA || await api('/api/admin/data');
+  const order = (D.orders || []).find(o => o.id === oid);
+  const hasSellerItems = order && (order.hasSellerItems || (order.items || []).some(i => i.source === 'seller' || i.sellerProductId));
+  const newStatus = hasSellerItems ? 'Seller Approval' : 'Awaiting Delivery';
+  showLoader(hasSellerItems ? 'Sending to seller...' : 'Accepting order...');
+  try { await api('/api/admin/orders/'+oid+'/status','PUT', { status: newStatus }); await adminReloadAndRender(); } catch(e) { apiError(e); }
 }
 async function adminRejectOrder(oid) {
   if (!confirm('Reject this order?')) return;
@@ -1237,6 +1268,73 @@ async function adminAssignDelivery(oid) {
   const boy = deliveryBoys[idx];
   showLoader('Assigning delivery boy...');
   try { await api('/api/admin/orders/'+oid+'/assign-delivery','POST', { deliveryBoyId:boy.id }); await adminReloadAndRender(); } catch(e) { apiError(e); }
+}
+
+// ====== PRINT ORDER SLIP ======
+async function printOrderSlip(oid, who) {
+  let order = null;
+  if (who === 'admin') {
+    const D = ADMIN_DATA || await api('/api/admin/data');
+    order = (D.orders || []).find(o => o.id === oid);
+  } else if (who === 'seller') {
+    const r = await api('/api/seller/orders');
+    order = (r.orders || []).find(o => o.id === oid);
+  }
+  if (!order) { alert('Order not found'); return; }
+  const itemsHtml = (order.items || []).map(i =>
+    `<tr><td>${esc(i.name)}</td><td class="ps-right">${i.qty}</td><td class="ps-right">${fmtPrice(i.price)}</td><td class="ps-right">${fmtPrice(i.price * i.qty)}</td></tr>`
+  ).join('');
+  const slipHtml = `
+    <div class="print-slip-overlay" id="printSlipOverlay" onclick="if(event.target.id==='printSlipOverlay')closePrintSlip()">
+      <div class="print-slip" onclick="event.stopPropagation()">
+        <div class="ps-header">
+          <div class="ps-brand">AFROJ GLOBAL VENTURES</div>
+          <div class="ps-sub">Premium Shopping, Delivered to You</div>
+        </div>
+        <div class="ps-row"><span><strong>Order ID:</strong></span><span><strong>${esc(order.id)}</strong></span></div>
+        <div class="ps-row"><span>Date:</span><span>${new Date(order.createdAt).toLocaleString('en-IN')}</span></div>
+        <div class="ps-row"><span>Payment:</span><span>COD</span></div>
+        ${who==='seller'?`<div class="ps-row"><span>Seller:</span><span>${esc(SESSION.user.name||'')}</span></div>`:''}
+        <div class="ps-divider"></div>
+        <div class="ps-sec-title">Delivery Address</div>
+        <div class="ps-address">
+          <strong>${esc(order.customer.name)}</strong><br>
+          +91 ${esc(order.customer.mobile)}<br>
+          ${esc(order.customer.address)}<br>
+          ${esc(order.customer.city||'')} ${order.customer.pincode?'- '+esc(order.customer.pincode):''}
+        </div>
+        <div class="ps-divider"></div>
+        <div class="ps-sec-title">Items</div>
+        <table class="ps-items-table">
+          <tr><th>Product</th><th class="ps-right">Qty</th><th class="ps-right">Price</th><th class="ps-right">Total</th></tr>
+          ${itemsHtml}
+        </table>
+        <div class="ps-row"><span>Subtotal:</span><span>${fmtPrice(order.subtotal)}</span></div>
+        <div class="ps-row"><span>Delivery:</span><span>${fmtPrice(order.delivery)}</span></div>
+        <div class="ps-total-row"><span>TOTAL:</span><span>${fmtPrice(order.total)}</span></div>
+        <div class="ps-divider"></div>
+        <div style="text-align:center;font-size:11px;color:#555;">Status: ${esc(order.status)}</div>
+        <div style="text-align:center;font-size:11px;margin-top:8px;">--- Thank you for shopping with us ---</div>
+        <div class="ps-actions">
+          <button class="btn-print-go" onclick="doPrintSlip()">🖨️ Print Now</button>
+          <button class="btn-print-close" onclick="closePrintSlip()">Close</button>
+        </div>
+      </div>
+    </div>
+  `;
+  // Remove existing overlay if any
+  const existing = document.getElementById('printSlipOverlay');
+  if (existing) existing.remove();
+  document.body.insertAdjacentHTML('beforeend', slipHtml);
+}
+
+function doPrintSlip() {
+  window.print();
+}
+
+function closePrintSlip() {
+  const ov = document.getElementById('printSlipOverlay');
+  if (ov) ov.remove();
 }
 
 async function adminApproveReg(rid) {
@@ -1262,6 +1360,69 @@ async function adminApproveSellerProduct(pid) {
   try { await api('/api/seller-products/'+pid+'/approve','POST', {}); await adminReloadAndRender(); } catch(e) { apiError(e); }
 }
 async function adminRejectSellerProduct(pid) { if(!confirm('Reject?'))return; showLoader('Rejecting...'); try{ await api('/api/seller-products/'+pid+'/reject','POST',{}); await adminReloadAndRender(); }catch(e){apiError(e);} }
+
+async function adminEditSellerProduct(pid) {
+  const D = ADMIN_DATA || await api('/api/admin/data');
+  const p = (D.sellerProducts||[]).find(x=>x.id===pid);
+  if (!p) { alert('Product not found'); return; }
+  const img = (p.images && p.images[0]) ? p.images[0] : (p.image||'');
+  const overlay = document.createElement('div');
+  overlay.className = 'edit-modal-overlay';
+  overlay.id = 'editSellerModal';
+  overlay.onclick = function(e) { if(e.target===overlay) overlay.remove(); };
+  overlay.innerHTML = `
+    <div class="edit-modal" style="position:relative;">
+      <h3>Edit Seller Product</h3>
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <div class="product-img" style="width:70px;height:70px;flex-shrink:0;background-image:url('${esc(img)}');border-radius:8px;border:1px solid var(--border);"></div>
+        <div><div class="small">By: ${esc(p.sellerName||'')}</div><div class="small">+91 ${esc(p.sellerMobile||'')}</div><span class="badge ${p.status==='approved'?'badge-approved':p.status==='rejected'?'badge-rejected':'badge-pending'}">${p.status}</span></div>
+      </div>
+      <div class="form-group"><label>Product Name</label><input type="text" id="espName" value="${esc(p.name||'')}"></div>
+      <div class="form-group"><label>Category</label><input type="text" id="espCat" value="${esc(p.category||'')}"></div>
+      <div class="row">
+        <div class="form-group"><label>Price (Rs.)</label><input type="number" id="espPrice" value="${p.price||0}"></div>
+        <div class="form-group"><label>MRP (Rs.)</label><input type="number" id="espMrp" value="${p.mrp||0}"></div>
+      </div>
+      <div class="row">
+        <div class="form-group"><label>Stock</label><input type="number" id="espStock" value="${p.stock||0}"></div>
+        <div class="form-group"><label>Delivery Days</label><input type="number" id="espDays" value="${p.deliveryDays||3}"></div>
+      </div>
+      <div class="form-group"><label>Delivery Charge (Rs.)</label><input type="number" id="espDelCharge" value="${p.deliveryCharge||0}"></div>
+      <div class="form-group"><label>Description</label><textarea id="espDesc" rows="3">${esc(p.description||'')}</textarea></div>
+      <div class="form-group"><label>Image URLs (one per line)</label><textarea id="espImages" rows="3">${(p.images||[]).join('\n')}</textarea></div>
+      <div class="form-group"><label>Status</label><select id="espStatus"><option value="pending" ${p.status==='pending'?'selected':''}>Pending</option><option value="approved" ${p.status==='approved'?'selected':''}>Approved (Live)</option><option value="rejected" ${p.status==='rejected'?'selected':''}>Rejected</option></select></div>
+      <button class="btn btn-gold btn-block" onclick="adminSaveSellerProductEdit('${pid}')">\u2705 Save Changes</button>
+      <button class="btn btn-outline btn-block" style="margin-top:8px;" onclick="document.getElementById('editSellerModal').remove()">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+async function adminSaveSellerProductEdit(pid) {
+  const name = $('espName').value.trim();
+  if (!name) { alert('Product name is required'); return; }
+  const imagesRaw = $('espImages').value.trim();
+  const images = imagesRaw ? imagesRaw.split('\n').map(s=>s.trim()).filter(s=>s) : [];
+  showLoader('Saving product...');
+  try {
+    await api('/api/seller-products/'+pid, 'PUT', {
+      name: name,
+      category: $('espCat').value.trim(),
+      price: Number($('espPrice').value),
+      mrp: Number($('espMrp').value),
+      stock: Number($('espStock').value),
+      deliveryDays: Number($('espDays').value),
+      deliveryCharge: Number($('espDelCharge').value),
+      description: $('espDesc').value.trim(),
+      images: images,
+      status: $('espStatus').value
+    });
+    const modal = document.getElementById('editSellerModal');
+    if (modal) modal.remove();
+    await adminReloadAndRender();
+    alert('Product updated successfully!');
+  } catch(e) { apiError(e); }
+}
 async function adminDeleteProduct(pid) { if(!confirm('Delete this product?'))return; showLoader('Deleting...'); try{ await api('/api/admin/products/'+pid,'DELETE'); await adminReloadAndRender(); }catch(e){apiError(e);} }
 
 async function adminBlockUser(uid_) { if(!confirm('Block?'))return; showLoader('Blocking...'); try{ await api('/api/admin/users/'+uid_,'PUT',{status:'blocked'}); await adminReloadAndRender(); }catch(e){apiError(e);} }
@@ -1287,11 +1448,11 @@ function renderAdminAddProduct() {
         <div class="form-group"><label>MRP (\u20b9)</label><input type="number" id="apMrp" placeholder="Original price" inputmode="numeric"></div>
         <div class="form-group"><label>Delivery Charge (\u20b9)</label><input type="number" id="apDelivery" value="0" inputmode="numeric"></div>
         <div class="form-group"><label>Stock *</label><input type="number" id="apStock" placeholder="Stock" inputmode="numeric"></div>
-        <div class="form-group"><label>Delivery Days *</label><input type="number" id="apDeliveryDays" value="3" min="1" max="30" inputmode="numeric"><p class="small" style="color:#666;">Customer sees expected delivery date based on this</p></div>
+        <div class="form-group"><label>Delivery Days *</label><input type="number" id="apDeliveryDays" value="3" min="1" max="30" inputmode="numeric"><p class="small" style="color:var(--gray);">Customer sees expected delivery date based on this</p></div>
         <div class="form-group"><label>Product Images (Max 5) *</label>
           <div class="file-upload" onclick="document.getElementById('apImageInput').click()"><div class="upload-icon">\ud83d\udcf7</div><p>Click to upload images (max 5)</p><input type="file" id="apImageInput" accept="image/*" multiple style="display:none;" onchange="handleImages(this,'apImagePreview','apImgCount',adminImages)"></div>
           <div id="apImagePreview" class="upload-preview"></div>
-          <p class="small" style="color:#666;">Uploaded: <span id="apImgCount">0</span>/5</p>
+          <p class="small" style="color:var(--gray);">Uploaded: <span id="apImgCount">0</span>/5</p>
         </div>
         <div class="form-group"><label>Description</label><textarea id="apDesc" rows="3" placeholder="Description"></textarea></div>
         <button class="btn btn-gold btn-block" onclick="adminAddProduct()">Add Product</button>
@@ -1327,7 +1488,7 @@ async function renderAdminEditProduct(pid) {
         <div class="form-group"><label>Product Images</label>
           <div class="file-upload" onclick="document.getElementById('epImageInput').click()"><div class="upload-icon">\ud83d\udcf7</div><p>Add more images (max 5 total)</p><input type="file" id="epImageInput" accept="image/*" multiple style="display:none;" onchange="handleImages(this,'epImagePreview','epImgCount',adminImages)"></div>
           <div id="epImagePreview" class="upload-preview"></div>
-          <p class="small" style="color:#666;">Current: <span id="epImgCount">${adminImages.length}</span>/5</p>
+          <p class="small" style="color:var(--gray);">Current: <span id="epImgCount">${adminImages.length}</span>/5</p>
         </div>
         <div class="form-group"><label>Description</label><textarea id="epDesc" rows="3">${esc(p.description||'')}</textarea></div>
         <button class="btn btn-gold btn-block" onclick="adminEditProduct('${pid}')">Save Changes</button>

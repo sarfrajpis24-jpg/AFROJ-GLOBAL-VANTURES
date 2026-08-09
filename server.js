@@ -544,11 +544,34 @@ const server = http.createServer((req, res) => {
       const orders = loadData('orders.json', []);
       const maxDays = Math.max.apply(null, body.items.map(i => i.deliveryDays || 3));
       const expectedDelivery = new Date(Date.now() + maxDays*86400000).toISOString();
+      // Tag each item with source (admin or seller) + seller info
+      const taggedItems = (body.items || []).map(item => {
+        const isSeller = !!(item.sellerProductId || item.sellerMobile);
+        return {
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          qty: item.qty,
+          image: item.image,
+          deliveryCharge: item.deliveryCharge || 0,
+          deliveryDays: item.deliveryDays || 3,
+          sellerProductId: item.sellerProductId || null,
+          sellerMobile: item.sellerMobile || null,
+          sellerName: item.sellerName || null,
+          source: isSeller ? 'seller' : 'admin'
+        };
+      });
+      const hasSellerItems = taggedItems.some(i => i.source === 'seller');
+      const hasAdminItems = taggedItems.some(i => i.source === 'admin');
+      const orderSource = hasSellerItems ? (hasAdminItems ? 'mixed' : 'seller') : 'admin';
       const order = {
         id: genOrderId(),
         customerId: u.id, customerMobile: u.mobile,
         customer: { name:body.customerName||u.name, mobile:u.mobile, address:body.address||'', city:body.city||'', pincode:body.pincode||'' },
-        items: body.items,
+        items: taggedItems,
+        orderSource: orderSource,
+        hasSellerItems: hasSellerItems,
+        hasAdminItems: hasAdminItems,
         subtotal: Number(body.subtotal), delivery: Number(body.delivery), total: Number(body.total),
         status: 'Awaiting Admin',
         statusHistory: [{ status:'Awaiting Admin', time:nowISO(), by:'Customer' }],
@@ -650,14 +673,18 @@ const server = http.createServer((req, res) => {
     });
   }
 
-  // Seller: orders for their products
+  // Seller: orders for their products (only show after admin has accepted — not 'Awaiting Admin')
   if (pathname === '/api/seller/orders' && method === 'GET') {
     const u = authUser();
     if (!u || u.role !== 'seller') return sendError('Seller auth required', 403);
     const sp = loadData('sellerProducts.json', []);
     const myProductIds = sp.filter(p => p.sellerMobile === u.mobile).map(p => p.id);
-    const orders = (loadData('orders.json', [])).filter(o => o.items && o.items.some(i => myProductIds.includes(i.id) || myProductIds.includes(i.sellerProductId)));
-    return sendJSON({ orders: orders.reverse() });
+    const orders = (loadData('orders.json', [])).filter(o =>
+      o.items && o.items.some(i => myProductIds.includes(i.id) || myProductIds.includes(i.sellerProductId) || i.sellerMobile === u.mobile)
+    );
+    // Seller only sees orders that admin has accepted (not 'Awaiting Admin')
+    const visibleOrders = orders.filter(o => o.status !== 'Awaiting Admin');
+    return sendJSON({ orders: visibleOrders.reverse() });
   }
   // Seller approves / rejects an order (changes status)
   if (pathname.startsWith('/api/seller/orders/') && method === 'PUT') {
@@ -704,6 +731,9 @@ const server = http.createServer((req, res) => {
       } else if (body.status) {
         if (o.assignedDelivery !== u.id) return sendError('Not assigned to you', 403);
         o.status = body.status;
+        if (body.status === 'Cancelled') {
+          o.cancelledBy = body.cancelledBy || 'Delivery';
+        }
         o.statusHistory.push({ status:body.status, time:nowISO(), by:'Delivery' });
       }
       o.updatedAt = nowISO();

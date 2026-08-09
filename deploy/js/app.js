@@ -229,22 +229,45 @@ async function sendCustomerOTP() {
   showLoader('Sending OTP...');
   try {
     const r = await api('/api/customer/send-otp', 'POST', { phone: mobile });
-    pendingOTP = r.otp;
     pendingMobile = mobile;
-    render(`
-      <div class="app-header"><button class="back-btn" onclick="renderCustomerLogin()">\u2190</button><h2>Verify OTP</h2></div>
-      <div class="app-content">
-        <div class="card card-gold">
-          <div class="alert alert-info">OTP sent to <strong>+91 ${mobile}</strong><br><br>For demo: Your OTP is <strong style="font-size:24px;color:var(--gold);">${pendingOTP}</strong></div>
-          <div class="form-group"><label>Enter OTP</label><input type="text" id="custOTP" placeholder="6-digit OTP" maxlength="6" inputmode="numeric" autofocus></div>
-          <button class="btn btn-gold btn-block" onclick="verifyCustomerOTP()">Verify & Login</button>
-          <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="renderCustomerLogin()">Change Number</button>
-        </div>
-      </div>
-    `);
+    // In SMS mode, OTP is NOT returned. In demo mode (or fallback), OTP is shown on screen.
+    const isDemo = (r.mode === 'demo' || r.fallback === true);
+    pendingOTP = isDemo ? r.otp : null;
+    renderOTPVerifyScreen(mobile, r.message || (isDemo ? 'OTP sent (demo mode)' : 'OTP sent via SMS'), isDemo);
   } catch (e) {
     apiError(e); renderCustomerLogin();
   }
+}
+
+async function resendCustomerOTP() {
+  if (!pendingMobile) { renderCustomerLogin(); return; }
+  showLoader('Re-sending OTP...');
+  try {
+    const r = await api('/api/customer/resend-otp', 'POST', { phone: pendingMobile });
+    const isDemo = (r.mode === 'demo' || r.fallback === true);
+    pendingOTP = isDemo ? r.otp : null;
+    renderOTPVerifyScreen(pendingMobile, r.message || (isDemo ? 'OTP re-sent (demo mode)' : 'OTP re-sent via SMS'), isDemo);
+  } catch (e) {
+    apiError(e);
+  }
+}
+
+function renderOTPVerifyScreen(mobile, message, isDemo) {
+  const demoHTML = isDemo
+    ? `<div class="alert alert-info" style="margin-bottom:15px;">${message}<br><br>For demo: Your OTP is <strong style="font-size:24px;color:var(--gold);">${pendingOTP}</strong></div>`
+    : `<div class="alert alert-info" style="margin-bottom:15px;">\ud83d\udcf1 OTP sent to <strong>+91 ${mobile}</strong> via SMS. Please check your phone messages and enter the 6-digit code below.</div>`;
+  render(`
+    <div class="app-header"><button class="back-btn" onclick="renderCustomerLogin()">\u2190</button><h2>Verify OTP</h2></div>
+    <div class="app-content">
+      <div class="card card-gold">
+        ${demoHTML}
+        <div class="form-group"><label>Enter OTP</label><input type="text" id="custOTP" placeholder="6-digit OTP" maxlength="6" inputmode="numeric" autofocus></div>
+        <button class="btn btn-gold btn-block" onclick="verifyCustomerOTP()">Verify & Login</button>
+        <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="resendCustomerOTP()">\ud83d\udd04 Resend OTP</button>
+        <button class="btn btn-outline btn-block" style="margin-top:10px;" onclick="renderCustomerLogin()">Change Number</button>
+      </div>
+    </div>
+  `);
 }
 
 async function verifyCustomerOTP() {

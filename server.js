@@ -4,6 +4,7 @@
    Data lives ONLY on the server -> every phone sees the same live data.
    ============================================================ */
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
@@ -66,6 +67,50 @@ initData();
 function genId(prefix) { return prefix + Date.now().toString(36).toUpperCase() + Math.floor(Math.random()*10000); }
 function genOTP() { return String(Math.floor(100000 + Math.random()*900000)); }
 function nowISO() { return new Date().toISOString(); }
+
+// ---------- Fast2SMS Real OTP Integration ----------
+// Read API key from environment variable (set in Render dashboard)
+const F2S_API_KEY = process.env.F2S_API_KEY || process.env.FAST2SMS_API_KEY || '';
+const OTP_MODE = F2S_API_KEY ? 'sms' : 'demo'; // 'sms' = real SMS, 'demo' = show on screen
+
+// Send real OTP SMS via Fast2SMS Quick SMS route (no DLT registration needed)
+function sendFast2SMS(phone, otp, cb) {
+  const message = `${otp} is your AFROJ GLOBAL VENTURES verification code. Do not share it with anyone.`;
+  const postData = JSON.stringify({
+    route: 'q',              // Quick SMS route (premium, no DLT required)
+    message: message,
+    language: 'english',
+    flash: 0,
+    numbers: phone           // 10-digit number, no country code
+  });
+  const options = {
+    hostname: 'www.fast2sms.com',
+    path: '/dev/bulkV2',
+    method: 'POST',
+    headers: {
+      'authorization': F2S_API_KEY,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(postData)
+    }
+  };
+  const smsReq = https.request(options, (smsRes) => {
+    let data = '';
+    smsRes.on('data', chunk => data += chunk);
+    smsRes.on('end', () => {
+      try {
+        const parsed = JSON.parse(data);
+        cb(parsed);
+      } catch(e) {
+        cb({ return: false, message: 'SMS provider parse error', raw: data });
+      }
+    });
+  });
+  smsReq.on('error', (e) => {
+    cb({ return: false, message: 'SMS network error: ' + e.message });
+  });
+  smsReq.write(postData);
+  smsReq.end();
+}
 function genOrderId() {
   const d = new Date();
   const mon = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getMonth()];
@@ -375,6 +420,11 @@ const server = http.createServer((req, res) => {
   }
 
   // ----- CUSTOMER OTP / LOGIN -----
+  // New endpoint: check which OTP mode is active (sms or demo)
+  if (pathname === '/api/customer/otp-mode' && method === 'GET') {
+    return sendJSON({ mode: OTP_MODE });
+  }
+
   if (pathname === '/api/customer/send-otp' && method === 'POST') {
     return readBody(body => {
       if (!body.phone || !/^\d{10}$/.test(body.phone)) return sendError('Invalid 10-digit mobile number');
@@ -382,8 +432,44 @@ const server = http.createServer((req, res) => {
       const existing = users.customers.find(c => c.mobile === body.phone);
       if (existing && existing.status === 'blocked') return sendError('Your account is blocked. Contact admin.');
       const otp = genOTP();
-      OTPS[body.phone] = { otp, expires: Date.now() + 300000 };
-      return sendJSON({ success:true, otp, message:'OTP sent successfully' });
+      OTPS[body.phone] = { otp, expires: Date.now() + 300000, attempts: 0 };
+
+      // Real SMS mode: send via Fast2SMS, do NOT return OTP in response
+      if (OTP_MODE === 'sms' && F2S_API_KEY) {
+        return sendFast2SMS(body.phone, otp, (result) => {
+          if (result && result.return === true) {
+            return sendJSON({ success: true, mode: 'sms', message: 'OTP sent to your mobile via SMS. Please check your messages.' });
+          } else {
+            // SMS failed (low balance / invalid key) — fall back to demo for this request only
+            const errMsg = (result && result.message) ? result.message : 'SMS sending failed';
+            return sendJSON({ success: true, mode: 'demo', otp: otp, message: 'SMS could not be sent (' + errMsg + '). For demo: use this OTP', fallback: true });
+          }
+        });
+      }
+
+      // Demo mode: return OTP in response (shown on screen)
+      return sendJSON({ success: true, mode: 'demo', otp: otp, message: 'OTP sent successfully (demo mode - shown on screen)' });
+    });
+  }
+  if (pathname === '/api/customer/resend-otp' && method === 'POST') {
+    return readBody(body => {
+      if (!body.phone || !/^\d{10}$/.test(body.phone)) return sendError('Invalid 10-digit mobile number');
+      const stored = OTPS[body.phone];
+      if (!stored) return sendError('Please request a new OTP first');
+      if (Date.now() > stored.expires) return sendError('OTP expired, please request a new one');
+      const otp = stored.otp; // reuse same OTP within validity window
+
+      if (OTP_MODE === 'sms' && F2S_API_KEY) {
+        return sendFast2SMS(body.phone, otp, (result) => {
+          if (result && result.return === true) {
+            return sendJSON({ success: true, mode: 'sms', message: 'OTP re-sent to your mobile via SMS.' });
+          } else {
+            const errMsg = (result && result.message) ? result.message : 'SMS sending failed';
+            return sendJSON({ success: true, mode: 'demo', otp: otp, message: 'SMS could not be sent (' + errMsg + '). For demo: use this OTP', fallback: true });
+          }
+        });
+      }
+      return sendJSON({ success: true, mode: 'demo', otp: otp, message: 'OTP re-sent (demo mode)' });
     });
   }
   if (pathname === '/api/customer/verify-otp' && method === 'POST') {

@@ -1,6 +1,6 @@
-// AFROJ GLOBAL VENTURES - Service Worker v3 (REST API)
+// AFROJ GLOBAL VENTURES - Service Worker v4 (REST API + Real OTP)
 // Network-first for app assets (always latest), network-only for API calls.
-const CACHE_NAME = 'agv-cache-v3';
+const CACHE_NAME = 'agv-cache-v4';
 const ASSETS = ['./','./index.html','./css/style.css','./js/app.js','./favicon.svg','./manifest.json','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install', function(event) {

@@ -1,6 +1,6 @@
-// AFROJ GLOBAL VENTURES - Service Worker v4 (REST API + Real OTP)
+// AFROJ GLOBAL VENTURES - Service Worker v5 (Install button removed, Play Store ready)
 // Network-first for app assets (always latest), network-only for API calls.
-const CACHE_NAME = 'agv-cache-v4';
+const CACHE_NAME = 'agv-cache-v5';
 const ASSETS = ['./','./index.html','./css/style.css','./js/app.js','./favicon.svg','./manifest.json','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install', function(event) {

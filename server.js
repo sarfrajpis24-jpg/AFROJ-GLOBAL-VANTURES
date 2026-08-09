@@ -183,6 +183,25 @@ const server = http.createServer((req, res) => {
   }
 
   // ========== STATIC FILES (PWA) ==========
+  // /download -> serve the APK directly (direct download link for users)
+  if (method === 'GET' && (pathname === '/download' || pathname === '/download/')) {
+    const apkDir = path.join(DEPLOY_DIR, 'apk');
+    if (fs.existsSync(apkDir) && fs.statSync(apkDir).isDirectory()) {
+      const apks = fs.existsSync(apkDir) ? fs.readdirSync(apkDir).filter(f => f.endsWith('.apk')) : [];
+      if (apks.length > 0) {
+        // pick the most recently modified APK
+        apks.sort((a, b) => fs.statSync(path.join(apkDir, b)).mtimeMs - fs.statSync(path.join(apkDir, a)).mtimeMs);
+        const apkFile = path.join(apkDir, apks[0]);
+        res.writeHead(200, { 'Content-Type': 'application/vnd.android.package-archive', 'Content-Disposition': 'attachment; filename="AFROJ-GLOBAL-VENTURES.apk"', 'Cache-Control': 'no-cache' });
+        fs.createReadStream(apkFile).pipe(res);
+        return;
+      }
+    }
+    // If no APK uploaded yet, show a helpful message
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end('<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>AFROJ GLOBAL VENTURES</title><style>body{font-family:system-ui,sans-serif;background:#0a0a0a;color:#D4AF37;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;padding:20px}h1{font-size:1.5rem}p{color:#fff;max-width:400px;line-height:1.6}a{color:#D4AF37}</style></head><body><h1>👑 AFROJ GLOBAL VENTURES</h1><p>App download (APK) abhi ready nahi hai.<br><br>App install karne ke liye:<br>1. Chrome browser mein <a href="/">is link</a> par jayein<br>2. Browser menu (⋮) se "Add to Home Screen" select karein<br><br>Ya Play Store se download karein (jald aane wala hai).</p></body></html>');
+    return;
+  }
   if (method === 'GET' && (pathname === '/' || pathname === '/index.html')) {
     const fp = path.join(DEPLOY_DIR, 'index.html');
     if (fs.existsSync(fp)) { res.writeHead(200, {'Content-Type':'text/html; charset=utf-8'}); res.end(fs.readFileSync(fp)); return; }
@@ -197,7 +216,13 @@ const server = http.createServer((req, res) => {
     const fp = path.join(DEPLOY_DIR, rel);
     if (fp.startsWith(DEPLOY_DIR) && fs.existsSync(fp) && fs.statSync(fp).isFile()) {
       const ext = path.extname(fp).toLowerCase();
-      const MIME = { '.html':'text/html; charset=utf-8', '.js':'application/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json; charset=utf-8', '.png':'image/png', '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.gif':'image/gif', '.svg':'image/svg+xml', '.ico':'image/x-icon', '.webp':'image/webp', '.woff':'font/woff', '.woff2':'font/woff2' };
+      const MIME = { '.html':'text/html; charset=utf-8', '.js':'application/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json; charset=utf-8', '.png':'image/png', '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.gif':'image/gif', '.svg':'image/svg+xml', '.ico':'image/x-icon', '.webp':'image/webp', '.woff':'font/woff', '.woff2':'font/woff2', '.apk':'application/vnd.android.package-archive', '.aab':'application/octet-stream' };
+      // Direct APK download — force browser to download as attachment
+      if (ext === '.apk') {
+        res.writeHead(200, { 'Content-Type': 'application/vnd.android.package-archive', 'Content-Disposition': 'attachment; filename="AFROJ-GLOBAL-VENTURES.apk"', 'Cache-Control': 'no-cache' });
+        fs.createReadStream(fp).pipe(res);
+        return;
+      }
       res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
       fs.createReadStream(fp).pipe(res);
       return;

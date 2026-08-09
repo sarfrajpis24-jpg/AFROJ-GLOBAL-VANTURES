@@ -148,7 +148,6 @@ function renderLanding() {
   CURRENT_ROUTE = 'landing';
   stopAllPolls();
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  const showInstall = !isStandalone;
   render(`
     <div class="landing">
       <div class="landing-hero">
@@ -161,7 +160,6 @@ function renderLanding() {
         <p class="landing-tagline">Luxury Shopping, Delivered to You</p>
         <div class="landing-crown">\ud83d\udc51</div>
       </div>
-      ${showInstall ? `<button id="pwa-install-btn" class="btn btn-install" onclick="installApp()">\ud83d\udcf2 Install App on Your Phone</button>` : ''}
       <div class="role-section">
         <div class="role-section-title">Choose Your Login</div>
         <button class="role-btn role-customer" onclick="renderCustomerLogin()">

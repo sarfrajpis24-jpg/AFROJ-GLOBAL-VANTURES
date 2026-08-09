@@ -29,24 +29,6 @@
       }).catch(function(err) { console.warn('SW registration failed:', err); });
     });
   }
-  let deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    setTimeout(function() {
-      var btn = document.getElementById('pwa-install-btn');
-      if (btn) { btn.style.display = 'block'; btn.dataset.available = '1'; }
-    }, 500);
-  });
-  window.addEventListener('appinstalled', function() {
-    deferredPrompt = null;
-    var btn = document.getElementById('pwa-install-btn');
-    if (btn) btn.style.display = 'none';
-  });
-  window.installApp = function() {
-    if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function() { deferredPrompt = null; }); }
-    else { alert('To install: tap your browser menu (⋮) and choose "Add to Home screen" or "Install app".'); }
-  };
 </script>
 </body>
 </html>

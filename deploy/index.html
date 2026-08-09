@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="AFROJ GLOBAL">
+  <meta name="application-name" content="AFROJ GLOBAL VENTURES">
+  <meta name="description" content="AFROJ GLOBAL VENTURES - Luxury Shopping, Delivered to You. Premium fashion, accessories, and lifestyle products.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>AFROJ GLOBAL VENTURES</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-container" id="app">
+  <div id="screen"></div>
+</div>
+<script src="js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').then(function(reg) {
+        console.log('Service Worker registered');
+      }).catch(function(err) { console.warn('SW registration failed:', err); });
+    });
+  }
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    setTimeout(function() {
+      var btn = document.getElementById('pwa-install-btn');
+      if (btn) { btn.style.display = 'block'; btn.dataset.available = '1'; }
+    }, 500);
+  });
+  window.addEventListener('appinstalled', function() {
+    deferredPrompt = null;
+    var btn = document.getElementById('pwa-install-btn');
+    if (btn) btn.style.display = 'none';
+  });
+  window.installApp = function() {
+    if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function() { deferredPrompt = null; }); }
+    else { alert('To install: tap your browser menu (⋮) and choose "Add to Home screen" or "Install app".'); }
+  };
+</script>
+</body>
+</html>

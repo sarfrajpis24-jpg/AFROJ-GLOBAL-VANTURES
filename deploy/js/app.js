@@ -191,13 +191,14 @@ function renderLanding() {
 function productCard(p) {
   const img = (p.images && p.images[0]) ? p.images[0] : (p.image || '');
   const discount = p.mrp && p.mrp > p.price ? Math.round((1 - p.price/p.mrp)*100) : 0;
+  const inStock = p.stock > 0;
   return `<div class="product-card" onclick="renderProductDetail('${p.id}')">
-    <div class="product-img" style="background-image:url('${esc(img)}')">${discount>0?`<span class="badge-corner">${discount}% off</span>`:''}</div>
+    <div class="product-img">${img ? `<img src="${esc(img)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'">` : '<div class="product-img-placeholder">No Image</div>'}${discount>0?`<span class="badge-corner">${discount}% off</span>`:''}</div>
     <div class="product-info">
       <div class="product-name">${esc(p.name)}</div>
-      ${p.mrp && p.mrp > p.price ? `<div class="product-price">${fmtPrice(p.price)} <span class="mrp">${fmtPrice(p.mrp)}</span></div>` : `<div class="product-price">${fmtPrice(p.price)}</div>`}
-      ${p.deliveryDays ? `<div class="delivery-eta">\ud83d\ude9a ${p.deliveryDays} days</div>` : ''}
-      ${p.stock > 0 ? '<div class="product-stock">In Stock</div>' : '<div class="product-stock out">Out of Stock</div>'}
+      <div class="product-price">${fmtPrice(p.price)}${p.mrp && p.mrp > p.price ? ` <span class="mrp">${fmtPrice(p.mrp)}</span>` : ''}</div>
+      <div class="product-stock ${inStock?'':'out'}">${inStock?'In Stock':'Out of Stock'}</div>
+      ${inStock ? `<button class="product-buy-btn" onclick="event.stopPropagation();buyNow('${p.id}')">Buy at ${fmtPrice(p.price)}</button>` : ''}
     </div>
   </div>`;
 }
